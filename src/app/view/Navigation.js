@@ -9,9 +9,8 @@ class Navigation extends Component {
       <nav className='navigation izi-ys izi-padding'>
         <AddAlbum />
         <style jsx>{`
-
 .navigation {
-  background-color: darkslategrey;
+  background-color: var(--bg1);
 }
         `}</style>
       </nav>
