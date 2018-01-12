@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import Async from './_/Async.js'
 import initDb from '../scripts/initDb'
-import initIpfs from '../scripts/initIpfs'
+import initIpfs from '../scripts/openAlbumsGate'
 
 import App from './App'
 
