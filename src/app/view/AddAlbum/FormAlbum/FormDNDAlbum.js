@@ -29,13 +29,30 @@ const getDirectoriesContentsRecursive = (files) => {
 }
 
 const getGenres = (tracks) => {
+  console.log(tracks)
   let genres = []
-  const eachHandler = track => {
-    genres = [...genres, ...track.genre]
+  const eachGenreHandler = genre => {
+    const genreLower = genre.toLowerCase()
+    const exists = genres.find(({ title }) => title === genreLower)
+    if (exists) {
+      exists.count++
+    } else {
+      genres.push({
+        title: genreLower,
+        count: 1
+      })
+    }
   }
-  tracks.forEach(eachHandler)
-  genres = Array.from(new Set(genres))
-  return genres
+  const eachTrackHandler = track => {
+    track.genre.forEach(eachGenreHandler)
+  }
+  tracks.forEach(eachTrackHandler)
+  const sortHandler = (a, b) => b.count - a.count
+  genres.sort(sortHandler)
+  console.log(genres)
+  const firstThree = genres.slice(0, 3)
+  const mapHandler = ({ title }) => title
+  return firstThree.map(mapHandler)
 }
 
 const getAlbumObjectFromFiles = async (files) => {
