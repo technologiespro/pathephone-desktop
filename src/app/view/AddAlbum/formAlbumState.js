@@ -5,7 +5,8 @@ const getRaw = () => ({
   title: '',
   artist: '',
   cover: '',
-  tracks: []
+  tracks: [],
+  genres: []
 })
 
 export let state = getRaw()
@@ -15,8 +16,8 @@ const actions = {
     state = getRaw()
   },
   REPLACE_DATA (albumData) {
-    const { title, artist, cover, tracks } = albumData
-    state = { title, artist, cover, tracks }
+    const { title, artist, cover, tracks, genres } = albumData
+    state = { title, artist, cover, tracks, genres }
   },
   EDIT_ABOUT (field, value) {
     state[field] = value

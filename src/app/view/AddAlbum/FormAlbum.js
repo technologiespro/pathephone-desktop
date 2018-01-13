@@ -8,6 +8,11 @@ const stateMethods = {
   onAboutChange (field, value) {
     albumFormState('EDIT_ABOUT', field, value)
   },
+  onGenresChange (value) {
+    const string = value.toLowerCase()
+    const genres = string.split(',')
+    albumFormState('EDIT_ABOUT', 'genres', genres)
+  },
   setRawAlbum () {
     albumFormState('DROP')
   },

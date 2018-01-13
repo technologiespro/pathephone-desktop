@@ -28,6 +28,16 @@ const getDirectoriesContentsRecursive = (files) => {
   return files.filter(file => file.type !== '').concat(directoriesFiles) // удаляем вначале все папки по которым прошлись, добавляем затем наши файлы
 }
 
+const getGenres = (tracks) => {
+  let genres = []
+  const eachHandler = track => {
+    genres = [...genres, ...track.genre]
+  }
+  tracks.forEach(eachHandler)
+  genres = Array.from(new Set(genres))
+  return genres
+}
+
 const getAlbumObjectFromFiles = async (files) => {
   files = Array.from(files)
   files = getDirectoriesContentsRecursive(files)
@@ -35,15 +45,20 @@ const getAlbumObjectFromFiles = async (files) => {
   const tracks = await getAudioTracksFromFiles(files)
   let artist = ''
   let title = ''
+  let genres = []
   if (tracks.length > 0) {
     artist = tracks[0].artist
     title = tracks[0].album
+    genres = getGenres(tracks)
+    const mapHandler = genre => genre.toLowerCase()
+    genres = genres.map(mapHandler)
   }
   return {
     title,
     artist,
     cover,
-    tracks
+    tracks,
+    genres
   }
 }
 
