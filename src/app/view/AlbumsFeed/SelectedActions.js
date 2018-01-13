@@ -42,6 +42,9 @@ const SelectedActions = ({ selectedNum, onPlay, onAdd, onDelete, onClear }) => {
         <MdClear />
       </button>
       <style jsx>{`
+.selected-actions__bar {
+  border-top: 1px solid darkgrey;
+}
 .cancel-button {
   margin-left: auto;
 }

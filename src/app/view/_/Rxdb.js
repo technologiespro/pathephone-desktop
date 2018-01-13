@@ -6,11 +6,15 @@ class Rxdb extends React.Component {
     data: null,
     error: null
   }
-  async componentWillMount () {
+  performQuery = async ({ collection, query, queryBuilder, reactive }) => {
     try {
-      const { collection, query, reactive } = this.props
       const db = getDb()
-      const queryObj = db[collection].find(query)
+      let queryObj
+      if (queryBuilder) {
+        queryObj = queryBuilder(db[collection])
+      } else {
+        queryObj = db[collection].find(query)
+      }
       if (reactive === true) {
         this.subscription = queryObj.$.subscribe(data => {
           this.setState({ data })
@@ -23,10 +27,20 @@ class Rxdb extends React.Component {
       this.setState({ error })
     }
   }
-  componentWillUnmount () {
+  cancelSubscription = () => {
     if (this.subscription) {
       this.subscription.unsubscribe()
     }
+  }
+  componentWillMount () {
+    this.performQuery(this.props)
+  }
+  componentWillReceiveProps (next) {
+    this.cancelSubscription()
+    this.performQuery(next)
+  }
+  componentWillUnmount () {
+    this.cancelSubscription()
   }
   render () {
     return (

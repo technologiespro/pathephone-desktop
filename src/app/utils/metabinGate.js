@@ -13,15 +13,19 @@ const openGate = async (ipfs, schema, listener) => {
   if (!listener) {
     throw new Error('Function must be passed as the third argument.')
   }
-  const nodeId = await ipfs.id()
   const ajv = new Ajv()
   const validator = ajv.compile(schema)
   const schemaCid = await ipfs.dag.put(schema, dagParams)
-  console.log('OPENED')
   const schemaCidString = schemaCid.toBaseEncodedString()
+  const nodeId = ipfs.id()
   const listenerWrapper = async (message) => {
+    console.log('===> metabin gate: incoming...')
     const { data, from } = message
-    if (from === nodeId) return
+    await nodeId
+    if (from === nodeId) {
+      console.log('===> ...our own message, skip.')
+      return
+    }
     const cidObj = new CID(data)
     const cidString = cidObj.toBaseEncodedString()
     const { value } = await ipfs.dag.get(cidString)

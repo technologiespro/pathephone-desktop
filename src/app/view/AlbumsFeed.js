@@ -79,19 +79,21 @@ class AlbumsFeed extends React.Component {
     const { selected } = this.state
     return (
       <div className='albums-feed__wrapper izi-fill izi-ys'>
-        <div id='albums-feed' className='albums-feed'>
+        <div id='albums-feed' className='albums-feed__feed'>
           {
             albums.map(this.AlbumWrapper)
           }
         </div>
         {
-          selected.length > 0 && [
-            <hr key='divider' />,
+          selected.length > 0 && (
             <SelectedActions {...this.getSelectedActionsProps()} key='actions' />
-          ]
+          )
         }
         <style jsx>{`
-.albums-feed {
+.albums-feed__wrapper {
+  flex-shrink: 1;
+}
+.albums-feed__feed {
   display: grid;
   grid-template-columns: repeat(auto-fill, 12.5em) ;
   justify-content: space-around;

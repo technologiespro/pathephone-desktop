@@ -14,8 +14,9 @@ export const getAudioTracksFromFiles = async (files) => {
   return Promise.all(hashes.map(async ({hash}, index) => {
     const file = files[index]
     try {
-      const {title, album, artist} = await readID3(file)
-      return {title, album, artist, hash}
+      const id3data = await readID3(file)
+      const { title, album, artist, genre } = id3data
+      return { title, album, artist, hash, genre }
     } catch (e) {
       return {hash}
     }

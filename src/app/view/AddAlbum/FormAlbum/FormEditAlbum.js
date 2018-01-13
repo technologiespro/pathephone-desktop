@@ -1,9 +1,19 @@
 import React from 'react'
 import FormAbout from './FormAbout'
 import FormTracks from './FormTracks'
+import albums from '~/data/albums'
+import validateAlbum from '~/scripts/validateAlbum'
+import shareAlbum from '~/scripts/shareAlbum'
 
-import publishAlbum from '../../../scripts/publishAlbum'
-import validateAlbum from '../../../scripts/validateAlbum'
+const saveNewAlbum = async (albumValue) => {
+  console.log(albumValue)
+  const { genres, ...data } = albumValue
+  const cid = await shareAlbum(data)
+  const albumDoc = {
+    genres, data, cid: cid.toBaseEncodedString()
+  }
+  return albums.collection.insert(albumDoc)
+}
 
 const Tips = () => (
   <fieldset>
@@ -39,6 +49,22 @@ fieldset {
   </fieldset>
 )
 
+const FormGenres = ({ value, onChange }) => {
+  const changeHandler = e => {
+    onChange(e.currentTarget.value)
+  }
+  return (
+    <fieldset>
+      <legend>Genres</legend>
+      <input
+        type='text'
+        value={value}
+        onChange={changeHandler}
+      />
+    </fieldset>
+  )
+}
+
 class FormEditAlbum extends React.Component {
   state = {
     loading: false,
@@ -53,7 +79,7 @@ class FormEditAlbum extends React.Component {
       if (!valid) {
         this.setState({ errors, loading: false })
       } else {
-        await publishAlbum(formState)
+        await saveNewAlbum(formState)
         this.props.onSuccess()
       }
     } catch (error) {
@@ -61,9 +87,7 @@ class FormEditAlbum extends React.Component {
     }
   }
   render () {
-    const {
-      formState
-    } = this.props
+    const { formState } = this.props
     const { errors } = this.state
     return (
       <div
@@ -74,6 +98,10 @@ class FormEditAlbum extends React.Component {
         <FormAbout
           value={formState}
           onChange={this.props.onAboutChange}
+        />
+        <FormGenres
+          value={formState.genres}
+          onChange={this.props.onGenresChange}
         />
         <FormTracks
           value={formState}
