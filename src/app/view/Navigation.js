@@ -10,7 +10,11 @@ class Navigation extends Component {
         <AddAlbum />
         <style jsx>{`
 .navigation {
-  background-color: var(--bg1);
+  width: 15em;
+  flex-shrink: 0;
+  background-color: darkslategrey;
+  height: 100%;
+  overflow-y: auto;
 }
         `}</style>
       </nav>
