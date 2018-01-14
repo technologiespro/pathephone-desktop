@@ -4,11 +4,11 @@ import MdAdd from 'react-icons/lib/md/playlist-add'
 import SyncIcon from '@/SyncIcon'
 import DiskIcon from '@/DiskIcon'
 import ImageContainer from '@/ImageContainer'
-import GetIpfsImage from '@/GetIpfsImage'
+import OnImageReady from '@/OnImageReady'
 
 const CoverView = ({ data, error }) => {
   if (data) {
-    return <ImageContainer className='izi-fill izi-rounded' image={data} />
+    return <ImageContainer className='izi-fill izi-rounded fadeIn animated' image={data} />
   }
   if (error) {
     return <DiskIcon />
@@ -16,6 +16,9 @@ const CoverView = ({ data, error }) => {
   return <SyncIcon />
 }
 
+const ipfsCatLink = (hash) => {
+  return `http://localhost:5001/api/v0/cat?arg=${hash}`
+}
 class Album extends React.Component {
   render () {
     const { data, onSelect, onAdd, onPlay, selected, cid } = this.props
@@ -28,8 +31,8 @@ class Album extends React.Component {
             onClick={onSelect}
             className='album__cover izi-rounded'
           >
-            <GetIpfsImage
-              hash={cover}
+            <OnImageReady
+              src={ipfsCatLink(cover)}
               view={CoverView}
             />
           </button>
