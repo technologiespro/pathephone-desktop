@@ -1,25 +1,16 @@
 import initDb from '~app/scripts/initDb'
 import openGates from '~app/scripts/openGates'
-import { startIpfsApi } from '~app/api/ipfsApi'
-import ipfsDaemon from '~app/api/ipfsDaemon'
+import initIpfs from '~app/utils/initIpfs'
 
-import { ipcRenderer, remote } from 'electron'
+import { putIpfsApi } from '~app/api/ipfsApi'
 
 const initApp = async ({ onNextStage }) => {
   try {
-    ipcRenderer.on('handle-custom-close', async () => {
-      onNextStage({ closing: true })
-      if (ipfsDaemon.stop) {
-        await ipfsDaemon.stop()
-      }
-      remote.getCurrentWindow().destroy()
-    })
     onNextStage({ message: 'rxdb', ready: 0 })
     await initDb()
     onNextStage({ message: 'ipfs daemon', ready: 20 })
-    await ipfsDaemon.start()
-    onNextStage({ message: 'ipfs api', ready: 50 })
-    await startIpfsApi({port: remote.getGlobal('portApi')})
+    const ipfsApi = await initIpfs()
+    putIpfsApi(ipfsApi)
     onNextStage({ message: 'metabin gates', ready: 70 })
     await openGates()
     onNextStage({ message: 'ready', ready: 100 })

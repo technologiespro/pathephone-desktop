@@ -8,5 +8,4 @@ export default (node) => {
     const exists = intersection(list, cids)
     return exists.length > 0 ? exists : false
   }
-  return node
 }
