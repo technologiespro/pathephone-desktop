@@ -1,6 +1,4 @@
-import getActualRepoPath from './ipfsDaemonConfigs/getActualRepoPath'
-
-const repoPath = getActualRepoPath()
+import repoPath from './ipfsDaemonConfigs/actualRepoPath'
 
 export const ipfsDaemonTestConfig = {
   repoPath

@@ -3,9 +3,11 @@ const { Application } = require('spectron')
 const { platform } = process
 
 let pathToBin
+let args = []
 
 if (process.env.E2E_TYPE === 'dev') {
   pathToBin = require('electron')
+  args.push('.')
 } else {
   if (platform === 'darwin') {
     pathToBin = 'dist/mac/Pathephone.app/Contents/MacOS/Pathephone'
@@ -18,11 +20,13 @@ if (process.env.E2E_TYPE === 'dev') {
   }
 }
 
+args.push('--tesing')
+
 const startApp = async function () {
   this.timeout(30000)
   this.app = new Application({
     path: pathToBin,
-    args: ['.'],
+    args,
     waitTimeout: 30000
   })
   await this.app.start()

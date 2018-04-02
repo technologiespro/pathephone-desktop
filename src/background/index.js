@@ -31,6 +31,14 @@ if (env.name === 'development') {
   require('electron-context-menu')({})
 }
 
+app.on('window-all-closed', () => {
+  // Respect the OSX convention of having the application in memory even
+  // after all windows have been closed
+  if (process.platform !== 'darwin') {
+    app.quit()
+  }
+})
+
 app.on('ready', async () => {
   setAppMenu(env)
   let mainWindow = createWindow('main', {
@@ -52,24 +60,12 @@ app.on('ready', async () => {
   mainWindow.webContents.on('will-navigate', e => { e.preventDefault() })
 
   mainWindow.on('close', e => {
-    e.preventDefault()
     if (!app.isQuiting && process.platform !== 'linux') {
       mainWindow.hide()
-      return
     }
-    mainWindow.webContents.send('handle-custom-close')
   })
 
   mainWindow.on('closed', () => {
     mainWindow = null
-  })
-
-  app.on('window-all-closed', () => {
-    console.log('closing app')
-    app.quit()
-  })
-
-  app.on('before-quit', () => {
-    app.isQuiting = true
   })
 })

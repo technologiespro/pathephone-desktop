@@ -1,3 +1,3 @@
-import startIpfs from '../modules/ipfsDaemon/startIpfs'
+import { argv } from 'yargs'
 
-global.startIpfsDaemon = startIpfs
+global.mode = argv.mode
