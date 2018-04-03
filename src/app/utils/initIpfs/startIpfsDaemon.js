@@ -3,32 +3,34 @@ import patchIpfsApi from './startIpfsDaemon/patchIpfsApi'
 
 const daemonFlags = ['--enable-pubsub-experiment']
 
+const factoryParams = { type: 'go' }
+
 const startIpfsDaemon = (daemonConfig) => {
-  const server = IPFSFactory.createServer()
-  const factory = IPFSFactory.create()
+  console.log(daemonConfig)
+  const factory = IPFSFactory.create(factoryParams)
   return new Promise((resolve, reject) => {
-    server.start((err) => {
-      if (err) {
-        reject(err)
-      }
-      factory.spawn(daemonConfig, (err, ipfsd) => {
+    const startDaemon = (ipfsd) => {
+      ipfsd.start(daemonFlags, (err, api) => {
         if (err) {
           reject(err)
         }
-        const startDaemon = () => {
-          ipfsd.start(daemonFlags, (err, api) => {
-            if (err) {
-              reject(err)
-            }
-            patchIpfsApi(api)
-            resolve(api)
-          })
-        }
-        ipfsd.init((err, ipfsd) => {
-          if (err) console.error(err)
-          startDaemon()
-        })
+        console.log(ipfsd)
+        patchIpfsApi(api)
+        resolve(api)
       })
+    }
+    factory.spawn(daemonConfig, (err, ipfsd) => {
+      if (err) {
+        reject(err)
+      }
+      if (ipfsd.initialized) {
+        startDaemon(ipfsd)
+      } else {
+        ipfsd.init((err) => {
+          if (err) console.error(err)
+          startDaemon(ipfsd)
+        })
+      }
     })
   })
 }
